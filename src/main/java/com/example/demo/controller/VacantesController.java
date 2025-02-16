@@ -51,8 +51,8 @@ public class VacantesController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String crear(Model model) {
-        model.addAttribute("miVacante", new Vacante());
+    public String crear(Model models) {
+        models.addAttribute("miVacante", new Vacante());
         return "/vacantes/formVacante";
     }
 
