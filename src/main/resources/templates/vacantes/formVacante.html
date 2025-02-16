@@ -29,7 +29,15 @@
         <div class="card">
           <h4 class="card-header"><strong>Datos de la oferta de trabajo</strong></h4>              
           <div class="card-body">
-            <form action="/vacantes/save" method="post">
+            <form action="/vacantes/save" method="post" th:object="${vacante}">
+
+              <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role='alert'>
+                Por favor corrija los siguientes errores:
+                <ul>
+                  <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
+                </ul>
+              </div>
+
               <div class="row">
                 <div class="col-md-3"> 
                   <div class="form-group">
@@ -90,7 +98,7 @@
                 <div class="col-md-3"> 
                   <div class="form-group">
                     <label for="salario">Salario Ofrecido (Aprox)</label>
-                    <input type="number" class="form-control" name="salario" id="salario" placeholder="Salario aproximado." required="required">
+                    <input type="text" class="form-control" name="salario" id="salario" placeholder="Salario aproximado." required="required">
                   </div>
                 </div>
                 <div class="col-md-3"> 
