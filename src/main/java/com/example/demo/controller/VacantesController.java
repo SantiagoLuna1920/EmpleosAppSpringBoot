@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +32,7 @@ public class VacantesController {
 
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Vacante vacante, BindingResult result, Model model, @RequestParam String fecha) {
+    public String save(Vacante vacante, BindingResult result, RedirectAttributes attributes, @RequestParam String fecha) {
 //el bindingresult me ayuda a atrapar los errores que haya cuando haga un post o get y atrape los valores, recordar que spring trae todos los valores del post o get de acuerdo al tipo de dato que quiero guardar, por ejemplo, salario en double o int, nombre en string, y fecha me la trae como string, osea, spring me trata de parsear los valores de la web de acuerdo a la variable en la que la quiera guardar, el problema está en las fechas
 
       System.out.println("Fecha = " + fecha);
@@ -44,15 +45,14 @@ public class VacantesController {
         }
 
         vacantesService.guardar(vacante);
-        List<Vacante> listaVacantes = vacantesService.buscarTodas();
-        model.addAttribute("listaVacantes", listaVacantes);
-
-        return "/vacantes/listVacantes";
+        //model.addAttribute("msg", "Registro guardado");
+        // al realizar la peticion al index y al renderizar el listVacantes.html, el atributo msg se perderá, ya que no le estoy pasando el atributo entre peticiones, por lo que ese atributo msg solo estará disponible en ese controlador save, pero el redirect: me hace una nueva peticion al controlador con el metodo index, por lo que no se guardará el atributo, para corregir esto, se usa el RedirectAttributes, y con el metodo addFlashAttributes le pasamos el atributo a la sig peticion, cuando recargue la pagina o haga otra peticion posterior, ya ese estado msg se perderá
+        attributes.addFlashAttribute("msg", "Registro guardado");
+        return "redirect:/vacantes/index";
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String crear(Model model) {
-        model.addAttribute("miVacante", new Vacante());
+    public String crear(Vacante vacante) {
         return "/vacantes/formVacante";
     }
 
