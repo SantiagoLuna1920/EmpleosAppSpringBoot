@@ -22,7 +22,7 @@ public class VacantesController {
 
     @Autowired
     IVacantesService vacantesService;
-
+//hola
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(Model model) {
         List<Vacante> listaVacantes = vacantesService.buscarTodas();
