@@ -12,6 +12,7 @@ public class Vacante {
     private String imagen = "no-image.png";
     private String estatus;
     private String detalles;
+    private Categoria categoria;
 
     public Vacante() {
         super();
@@ -78,6 +79,14 @@ public class Vacante {
         return estatus;
     }
 
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
     public void setEstatus(String estatus) {
         this.estatus = estatus;
     }
@@ -102,6 +111,7 @@ public class Vacante {
                 ", imagen='" + imagen + '\'' +
                 ", estatus='" + estatus + '\'' +
                 ", detalles='" + detalles + '\'' +
+                ", categoria=" + categoria +
                 '}';
     }
 }

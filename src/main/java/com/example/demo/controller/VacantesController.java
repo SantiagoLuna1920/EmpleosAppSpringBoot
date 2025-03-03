@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Vacante;
+import com.example.demo.service.ICategoriasService;
 import com.example.demo.service.IVacantesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -22,6 +23,9 @@ public class VacantesController {
 
     @Autowired
     IVacantesService vacantesService;
+
+    @Autowired
+    ICategoriasService categoriasService;
 //hola
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(Model model) {
@@ -32,18 +36,19 @@ public class VacantesController {
 
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Vacante vacante, BindingResult result, RedirectAttributes attributes, @RequestParam String fecha) {
+    public String save(Vacante vacante, BindingResult result, RedirectAttributes attributes, Model model) {
 //el bindingresult me ayuda a atrapar los errores que haya cuando haga un post o get y atrape los valores, recordar que spring trae todos los valores del post o get de acuerdo al tipo de dato que quiero guardar, por ejemplo, salario en double o int, nombre en string, y fecha me la trae como string, osea, spring me trata de parsear los valores de la web de acuerdo a la variable en la que la quiera guardar, el problema está en las fechas
+        System.out.println("-----");
 
-      System.out.println("Fecha = " + fecha);
         if( result.hasErrors() ) {
             for (ObjectError error : result.getAllErrors()){
                 System.out.println("Ocurrio un error: "+ error.getDefaultMessage());
             }
-
+            model.addAttribute("categorias", categoriasService.buscarTodas());
             return "/vacantes/formVacante";
         }
 
+        System.out.println(vacante);
         vacantesService.guardar(vacante);
         //model.addAttribute("msg", "Registro guardado");
         // al realizar la peticion al index y al renderizar el listVacantes.html, el atributo msg se perderá, ya que no le estoy pasando el atributo entre peticiones, por lo que ese atributo msg solo estará disponible en ese controlador save, pero el redirect: me hace una nueva peticion al controlador con el metodo index, por lo que no se guardará el atributo, para corregir esto, se usa el RedirectAttributes, y con el metodo addFlashAttributes le pasamos el atributo a la sig peticion, cuando recargue la pagina o haga otra peticion posterior, ya ese estado msg se perderá
@@ -52,7 +57,8 @@ public class VacantesController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String crear(Vacante vacante) {
+    public String crear(Vacante vacante, Model model) {
+        model.addAttribute("categorias", categoriasService.buscarTodas());
         return "/vacantes/formVacante";
     }
 
@@ -65,10 +71,12 @@ public class VacantesController {
 
 
 
+
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder ) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         webDataBinder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
     }
+
 
 }
